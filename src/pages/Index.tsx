@@ -1,5 +1,6 @@
 import { Search, Mic, User, Bell, Settings } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import burgerImg from "@/assets/burger.png";
@@ -14,36 +15,66 @@ const categories = [
     label: "E-commerce",
     image: laptopImg,
     description: "Find me the cheapest iPhone 15 Pro today",
-    link: "/electronics"
+    link: "/electronics",
+    keywords: ["electronics", "e-commerce", "phone", "laptop", "iphone", "shopping"]
   },
   {
     icon: "🍕",
     label: "Food",
     image: pizzaImg,
     description: "Order pizza under ₹300",
-    link: "/food-search"
+    link: "/food-search",
+    keywords: ["food", "pizza", "burger", "eat", "order", "restaurant"]
   },
   {
     icon: "🚗",
     label: "Rides",
     image: taxiImg,
     description: "Book the cheapest ride to Airport",
-    link: "/rides"
+    link: "/rides",
+    keywords: ["rides", "taxi", "cab", "uber", "ola", "ride", "car"]
   },
   {
     icon: "🚌",
     label: "Travel",
     image: busImg,
     description: "Find a bus Bangalore under ₹1,000",
-    link: "/travel"
+    link: "/travel",
+    keywords: ["travel", "bus", "train", "flight", "trip", "journey"]
   },
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      
+      // Check for hotel-related searches
+      if (query.includes("hotel") || query.includes("stay") || query.includes("room")) {
+        navigate("/hotel-finder");
+        return;
+      }
+      
+      // Check categories
+      for (const category of categories) {
+        if (category.keywords.some(keyword => query.includes(keyword))) {
+          navigate(category.link);
+          return;
+        }
+      }
+      
+      // Default to food search if no match
+      navigate("/food-search");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-4">
+      <header className="flex items-center justify-between px-5 py-4 max-w-2xl mx-auto w-full">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
             <span className="text-primary text-xl font-bold">⬡</span>
@@ -63,7 +94,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-5 pb-8">
+      <main className="px-5 pb-8 flex-1 flex flex-col items-center max-w-2xl mx-auto w-full">
         {/* Hero Title */}
         <div className="text-center py-8">
           <h1 className="text-3xl font-bold text-foreground leading-tight">
@@ -72,7 +103,7 @@ const Index = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-4">
+        <div className="relative mb-4 w-full">
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
             <Search size={20} />
           </div>
@@ -81,6 +112,9 @@ const Index = () => {
             inputSize="lg"
             placeholder="Ask me anything..."
             className="pl-12 pr-20"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button className="w-9 h-9 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
@@ -98,8 +132,8 @@ const Index = () => {
         </p>
 
         {/* Category Cards */}
-        <div className="overflow-x-auto scrollbar-hide -mx-5 px-5">
-          <div className="flex gap-4 pb-4">
+        <div className="overflow-x-auto scrollbar-hide w-full">
+          <div className="flex gap-4 pb-4 justify-center">
             {categories.map((category) => (
               <Link 
                 key={category.label} 
