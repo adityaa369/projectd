@@ -77,7 +77,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-4 max-w-2xl mx-auto w-full">
+      <header className="flex items-center justify-between px-5 py-4 max-w-4xl mx-auto w-full">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
             <span className="text-primary text-xl font-bold">⬡</span>
@@ -97,11 +97,11 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-5 pb-8 flex-1 flex flex-col items-center max-w-2xl mx-auto w-full">
+      <main className="px-5 pb-8 flex-1 flex flex-col items-center max-w-4xl mx-auto w-full">
         {/* Hero Title */}
         <div className="text-center py-8">
           <h1 className="text-3xl font-bold text-foreground leading-tight">
-            AI cost-saving<br />assistant
+            DeepInk
           </h1>
         </div>
 
