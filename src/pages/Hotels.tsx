@@ -31,7 +31,7 @@ const Hotels = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-4 max-w-2xl mx-auto w-full">
+      <header className="flex items-center justify-between px-5 py-4 max-w-4xl mx-auto w-full">
         <Link to="/" className="w-10 h-10 rounded-full flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
           <ArrowLeft size={22} />
         </Link>
@@ -40,7 +40,7 @@ const Hotels = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-5 max-w-2xl mx-auto w-full">
+      <main className="px-5 max-w-4xl mx-auto w-full">
         {/* Search Form */}
         <Card variant="default" className="p-4 mb-4 animate-fade-in">
           <div className="space-y-3">
@@ -181,7 +181,7 @@ const Hotels = () => {
 
       {/* Footer Booking Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 shadow-elevated">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-sm text-muted-foreground">{selectedHotel.name} • {selectedHotel.type}</p>
