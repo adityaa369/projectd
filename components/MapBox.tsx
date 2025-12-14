@@ -14,22 +14,34 @@ const MapBox = ({ pickup, destination, onPickupChange, onDestinationChange }: Ma
   const map = useRef<mapboxgl.Map | null>(null);
   const pickupMarker = useRef<mapboxgl.Marker | null>(null);
   const destMarker = useRef<mapboxgl.Marker | null>(null);
-  const [mapToken, setMapToken] = useState(localStorage.getItem('mapbox_token') || '');
-  const [tokenSaved, setTokenSaved] = useState(!!localStorage.getItem('mapbox_token'));
+  const [mapToken, setMapToken] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('mapbox_token') || '';
+    }
+    return '';
+  });
+  const [tokenSaved, setTokenSaved] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('mapbox_token');
+    }
+    return false;
+  });
 
   const saveToken = () => {
-    localStorage.setItem('mapbox_token', mapToken);
-    setTokenSaved(true);
-    window.location.reload();
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mapbox_token', mapToken);
+      setTokenSaved(true);
+      window.location.reload();
+    }
   };
 
   useEffect(() => {
     if (!mapContainer.current || !tokenSaved) return;
 
     mapboxgl.accessToken = mapToken;
-    
-    const defaultCenter: [number, number] = pickup 
-      ? [pickup.lng, pickup.lat] 
+
+    const defaultCenter: [number, number] = pickup
+      ? [pickup.lng, pickup.lat]
       : [77.5946, 12.9716]; // Bangalore default
 
     map.current = new mapboxgl.Map({
@@ -96,7 +108,7 @@ const MapBox = ({ pickup, destination, onPickupChange, onDestinationChange }: Ma
         const bounds = new mapboxgl.LngLatBounds()
           .extend([pickup.lng, pickup.lat])
           .extend([destination.lng, destination.lat]);
-        
+
         map.current?.fitBounds(bounds, { padding: 80 });
       });
     }
