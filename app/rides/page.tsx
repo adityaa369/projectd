@@ -12,8 +12,9 @@ import taxiImg from "@/assets/taxi.png";
 const rideOptions = [
     {
         id: 1,
-        name: "Uber Go",
+        name: "Uber Cab",
         type: "Economy",
+        category: "Cab",
         price: 209,
         time: "4 min away",
         eta: "25 min",
@@ -22,8 +23,9 @@ const rideOptions = [
     },
     {
         id: 2,
-        name: "Ola Mini",
+        name: "Ola Cab",
         type: "Economy",
+        category: "Cab",
         price: 189,
         time: "3 min away",
         eta: "28 min",
@@ -34,6 +36,7 @@ const rideOptions = [
         id: 3,
         name: "Uber Premier",
         type: "Premium",
+        category: "Cab",
         price: 349,
         time: "6 min away",
         eta: "22 min",
@@ -44,6 +47,7 @@ const rideOptions = [
         id: 4,
         name: "Ola Prime",
         type: "Premium",
+        category: "Cab",
         price: 329,
         time: "5 min away",
         eta: "24 min",
@@ -52,12 +56,46 @@ const rideOptions = [
     },
     {
         id: 5,
-        name: "Rapido Bike",
+        name: "Uber Bike",
         type: "Bike",
-        price: 79,
+        category: "Bike",
+        price: 45,
         time: "2 min away",
         eta: "20 min",
-        platform: "Rapido",
+        platform: "Uber",
+        image: taxiImg,
+    },
+    {
+        id: 6,
+        name: "Ola Bike",
+        type: "Bike",
+        category: "Bike",
+        price: 42,
+        time: "4 min away",
+        eta: "21 min",
+        platform: "Ola",
+        image: taxiImg,
+    },
+    {
+        id: 7,
+        name: "Uber Auto",
+        type: "Auto",
+        category: "Auto",
+        price: 85,
+        time: "3 min away",
+        eta: "26 min",
+        platform: "Uber",
+        image: taxiImg,
+    },
+    {
+        id: 8,
+        name: "Ola Auto",
+        type: "Auto",
+        category: "Auto",
+        price: 82,
+        time: "5 min away",
+        eta: "27 min",
+        platform: "Ola",
         image: taxiImg,
     },
 ];
@@ -65,7 +103,20 @@ const rideOptions = [
 const Rides = () => {
     const [pickup, setPickup] = useState("Current Location");
     const [destination, setDestination] = useState("Kempegowda International Airport");
-    const [selectedRide, setSelectedRide] = useState(rideOptions[1]); // Best value
+    const [selectedMode, setSelectedMode] = useState("Cab");
+
+    // Filter rides based on selected mode
+    const filteredRides = rideOptions.filter(ride => ride.category === selectedMode);
+
+    // Auto-select best value when mode changes (lowest price in category)
+    const bestValueRide = filteredRides.reduce((prev, curr) => prev.price < curr.price ? prev : curr, filteredRides[0]);
+
+    const [selectedRide, setSelectedRide] = useState(filteredRides[0]);
+
+    // Update selected ride when mode changes
+    if (selectedRide.category !== selectedMode) {
+        setSelectedRide(bestValueRide);
+    }
 
     const pickupCoords = { lat: 12.9716, lng: 77.5946, label: pickup };
     const destCoords = { lat: 13.1989, lng: 77.7068, label: destination };
@@ -84,9 +135,28 @@ const Rides = () => {
             {/* Main Content */}
             <main className="px-5">
                 {/* Map */}
-                <Card variant="default" className="h-64 mb-6 overflow-hidden animate-fade-in">
+                <Card variant="default" className="h-64 mb-4 overflow-hidden animate-fade-in">
                     <MapBox pickup={pickupCoords} destination={destCoords} />
                 </Card>
+
+                {/* Mode Switcher */}
+                <div className="flex p-1 bg-secondary/50 rounded-xl mb-6">
+                    {["Bike", "Auto", "Cab"].map((mode) => (
+                        <button
+                            key={mode}
+                            onClick={() => setSelectedMode(mode)}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${selectedMode === mode
+                                    ? "bg-background shadow-sm text-foreground"
+                                    : "text-muted-foreground hover:text-foreground"
+                                }`}
+                        >
+                            <span className="text-lg">
+                                {mode === "Bike" ? "🏍️" : mode === "Auto" ? "🛺" : "🚕"}
+                            </span>
+                            {mode}
+                        </button>
+                    ))}
+                </div>
 
                 {/* Location Inputs */}
                 <Card variant="default" className="p-4 mb-4 animate-fade-in">
@@ -151,10 +221,10 @@ const Rides = () => {
                 </Card>
 
                 {/* All Ride Options */}
-                <h2 className="text-xl font-bold text-foreground mb-4">Compare Rides</h2>
+                <h2 className="text-xl font-bold text-foreground mb-4">Compare {selectedMode}s</h2>
 
                 <div className="space-y-3 mb-6">
-                    {rideOptions.map((ride) => (
+                    {filteredRides.map((ride) => (
                         <Card
                             key={ride.id}
                             variant="default"
