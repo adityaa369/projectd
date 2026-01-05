@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { ArrowUp, Plus, Search, Globe, Image as ImageIcon, MapPin, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { allElectronics, allFoodItems, categories, foodCategories } from "@/lib/mockData";
 import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function HomeContent() {
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const searchParams = useSearchParams();
@@ -240,5 +240,13 @@ export default function Home() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function Home() {
+    return (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading AI Interface...</div>}>
+            <HomeContent />
+        </Suspense>
     );
 }
