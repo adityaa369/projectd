@@ -1,191 +1,244 @@
 "use client";
 
-import { Search, Mic, User, Bell, Settings, Plus } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { useTheme } from "next-themes";
+import { useEffect, useState, useRef } from "react";
+import { ArrowUp, Plus, Search, Globe, Image as ImageIcon, MapPin, Paperclip } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import burgerImg from "@/assets/burger.png";
-import pizzaImg from "@/assets/pizza.png";
-import taxiImg from "@/assets/taxi.png";
-import busImg from "@/assets/bus.png";
-import laptopImg from "@/assets/laptop.png";
-import Image from "next/image";
-import hotelImg from "@/assets/hotel-delhi.jpg";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { allElectronics, allFoodItems, categories, foodCategories } from "@/lib/mockData";
+import { useSearchParams } from "next/navigation";
 
-const categories = [
-    {
-        icon: "🛒",
-        label: "E-commerce",
-        image: laptopImg,
-        description: "Find me the cheapest iPhone 15 Pro today",
-        link: "/electronics",
-        keywords: ["electronics", "e-commerce", "phone", "laptop", "iphone", "shopping"]
-    },
-    {
-        icon: "🍕",
-        label: "Food",
-        image: pizzaImg,
-        description: "Order pizza under ₹300",
-        link: "/food-search",
-        keywords: ["food", "pizza", "burger", "eat", "order", "restaurant"]
-    },
-    {
-        icon: "🚗",
-        label: "Rides",
-        image: taxiImg,
-        description: "Book the cheapest ride to Airport",
-        link: "/rides",
-        keywords: ["rides", "taxi", "cab", "uber", "ola", "ride", "car"]
-    },
-    {
-        icon: "🚌",
-        label: "Travel",
-        image: busImg,
-        description: "Find a bus Bangalore under ₹1,000",
-        link: "/travel",
-        keywords: ["travel", "bus", "train", "flight", "trip", "journey"]
-    },
-    {
-        icon: "🏨",
-        label: "Hotels",
-        image: hotelImg,
-        description: "Find hotels near me under ₹2000",
-        link: "/hotel-finder",
-        keywords: ["hotel", "stay", "room", "booking"]
-    },
-];
-
-const Index = () => {
-    const router = useRouter();
+export default function Home() {
+    const { theme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+    const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
+    const [hasSearched, setHasSearched] = useState(false);
+    const [activeResultType, setActiveResultType] = useState<"all" | "electronics" | "food">("all");
+    const resultsEndRef = useRef<HTMLDivElement>(null);
 
-    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && searchQuery.trim()) {
-            const query = searchQuery.toLowerCase().trim();
+    // Initial mounting for theme
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-            // Check for hotel-related searches
-            if (query.includes("hotel") || query.includes("stay") || query.includes("room")) {
-                router.push("/hotel-finder");
-                return;
-            }
+    // Initial Category Load
+    useEffect(() => {
+        const category = searchParams.get("category");
+        if (category === "electronics") {
+            setActiveResultType("electronics");
+            setHasSearched(true);
+        } else if (category === "food") {
+            setActiveResultType("food");
+            setHasSearched(true);
+        }
+    }, [searchParams]);
 
-            // Check categories
-            for (const category of categories) {
-                if (category.keywords.some(keyword => query.includes(keyword))) {
-                    router.push(category.link);
-                    return;
-                }
-            }
+    // Scroll to bottom on search
+    useEffect(() => {
+        if (hasSearched && resultsEndRef.current) {
+            resultsEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [hasSearched, activeResultType, searchQuery]);
 
-            // Default to food search if no match
-            router.push("/food-search");
+    if (!mounted) {
+        return <div className="flex h-screen items-center justify-center">Loading AI Interface...</div>;
+    }
+
+    const handleSearch = () => {
+        if (!searchQuery.trim()) return;
+        setHasSearched(true);
+
+        // Simple keyword detection for demo
+        const lowerQuery = searchQuery.toLowerCase();
+        if (lowerQuery.includes("food") || lowerQuery.includes("pizza") || lowerQuery.includes("burger") || lowerQuery.includes("biryani")) {
+            setActiveResultType("food");
+        } else {
+            setActiveResultType("electronics");
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
+    // Filter Logic
+    const filteredElectronics = allElectronics.filter(item =>
+        !searchQuery || item.name.toLowerCase().includes(searchQuery.toLowerCase().replace("best", "").trim()) || item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const filteredFood = allFoodItems.filter(item =>
+        !searchQuery || item.name.toLowerCase().includes(searchQuery.toLowerCase().replace("best", "").replace("food", "").trim()) || item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <div className="min-h-screen bg-background flex flex-col">
-            {/* Header */}
-            <header className="flex items-center justify-between px-5 py-4 max-w-6xl mx-auto w-full">
-                <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary text-xl font-bold">⬡</span>
-                    </div>
-                </div>
-                <div className="flex items-center gap-3">
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
-                        <User size={22} />
-                    </button>
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
-                        <Bell size={22} />
-                    </button>
-                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
-                        <Settings size={22} />
-                    </button>
-                </div>
-            </header>
+        <div className="flex flex-col h-screen text-foreground relative">
 
-            {/* Main Content */}
-            <main className="px-5 pb-8 flex-1 flex flex-col items-center max-w-6xl mx-auto w-full">
-                {/* Hero Title */}
-                <div className="text-center py-8">
-                    <h1 className="text-3xl font-bold text-foreground leading-tight">
-                        DeepInk
-                    </h1>
-                </div>
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto pb-40">
+                <main className={`flex flex-col items-center px-4 transition-all duration-500 h-full ${hasSearched ? "pt-10 justify-start" : "justify-center"}`}>
 
-                {/* Search Bar */}
-                <div className="relative mb-4 w-full">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                        <Search size={20} />
-                    </div>
-                    <Input
-                        variant="search"
-                        inputSize="lg"
-                        placeholder="Ask me anything..."
-                        className="pl-12 pr-20"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={handleSearch}
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <button className="w-9 h-9 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
-                            <Mic size={20} />
-                        </button>
-                        <button className="w-9 h-9 rounded-full flex items-center justify-center text-icon-grey hover:bg-secondary transition-colors">
-                            <Plus size={20} />
-                        </button>
-                    </div>
-                </div>
+                    {/* Hero Section - Only Visible Initially */}
+                    {!hasSearched && (
+                        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] w-full max-w-2xl px-4 animate-fade-in">
+                            <h1 className="text-4xl md:text-5xl font-semibold mb-10 tracking-tight text-center">How can I help you today?</h1>
 
-                {/* Hint Text */}
-                <p className="text-center text-muted-foreground text-sm mb-10">
-                    (Find a phone, Order pizza, Book a ride, Plan a trip)
-                </p>
+                            {/* Initial Centered Search Bar */}
+                            <div className="w-full max-w-2xl">
+                                <div className="relative flex flex-col w-full bg-secondary/10 border border-border/60 hover:border-border/100 rounded-[2rem] shadow-sm transition-colors duration-200">
+                                    <Input
+                                        className="w-full bg-transparent border-none shadow-none px-6 py-4 text-lg focus-visible:ring-0 placeholder:text-muted-foreground/50 min-h-[64px] resize-none rounded-[2rem]"
+                                        placeholder="Ask anything..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onKeyDown={handleKeyDown}
+                                        autoFocus
+                                    />
 
-                {/* Category Cards */}
-                <div className="overflow-x-auto scrollbar-hide w-full">
-                    <div className="flex gap-4 pb-4 justify-start md:justify-center">
-                        {categories.map((category) => (
-                            <Link
-                                key={category.label}
-                                href={category.link}
-                                className="flex-shrink-0"
-                            >
-                                <Card variant="default" className="w-[160px] md:w-48 p-4 hover:shadow-elevated transition-shadow cursor-pointer animate-fade-in group">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <span className="text-lg">{category.icon}</span>
-                                        <span className="font-semibold text-foreground text-sm md:text-base">{category.label}</span>
+                                    {/* Action Buttons */}
+                                    <div className="flex justify-between items-center px-4 pb-3">
+                                        <div className="flex items-center gap-2">
+                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-muted-foreground/70 hover:text-foreground hover:bg-muted/50">
+                                                <Plus size={20} />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-muted-foreground/70 hover:text-foreground hover:bg-muted/50">
+                                                <Globe size={18} />
+                                                <span className="sr-only">Search</span>
+                                            </Button>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <Button
+                                                size="icon"
+                                                className={`h-9 w-9 rounded-full transition-all duration-200 ${searchQuery ? "bg-primary text-primary-foreground" : "bg-muted/20 text-muted-foreground/40 cursor-not-allowed"}`}
+                                                disabled={!searchQuery}
+                                                onClick={handleSearch}
+                                            >
+                                                <ArrowUp size={20} />
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="w-full h-24 md:h-32 rounded-xl bg-secondary/50 mb-3 overflow-hidden flex items-center justify-center relative transition-transform group-hover:scale-105">
-                                        <Image
-                                            src={category.image}
-                                            alt={category.label}
-                                            className="object-contain p-2"
-                                            fill
-                                        />
+                                </div>
+                            </div>
+
+                            {/* Quick Actions Footer (Initial View Only) */}
+                            <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs font-medium text-muted-foreground/60 animate-fade-in delay-200">
+                                <button className="flex items-center gap-2 hover:text-foreground transition-colors px-3 py-2 hover:bg-secondary/40 rounded-full"><ImageIcon size={14} /> Create image</button>
+                                <button className="flex items-center gap-2 hover:text-foreground transition-colors px-3 py-2 hover:bg-secondary/40 rounded-full"><MapPin size={14} /> Plan trip</button>
+                                <button className="flex items-center gap-2 hover:text-foreground transition-colors px-3 py-2 hover:bg-secondary/40 rounded-full"><Paperclip size={14} /> Analyze Data</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Results View - Only Visible After Search */}
+                    {hasSearched && (
+                        <div className="w-full max-w-3xl animate-fade-in pb-20">
+
+                            {/* User Query Bubble */}
+                            {searchQuery && (
+                                <div className="flex justify-end mb-8">
+                                    <div className="bg-secondary px-5 py-3 rounded-2xl rounded-tr-sm max-w-[80%] text-sm">
+                                        {searchQuery}
                                     </div>
-                                    <p className="text-xs md:text-sm text-foreground leading-snug line-clamp-2">
-                                        {category.description}
+                                </div>
+                            )}
+
+                            {/* AI Response Block */}
+                            <div className="flex gap-4 mb-8">
+                                <div className="w-8 h-8 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center mt-1">
+                                    <span className="text-primary text-xs font-bold">AI</span>
+                                </div>
+                                <div className="flex-1 space-y-4">
+                                    <p className="text-sm font-medium">
+                                        {searchQuery ? (
+                                            <>Here are the top results for <span className="text-primary">"{searchQuery}"</span>:</>
+                                        ) : (
+                                            <>Showing top <span className="text-primary capitalize">{activeResultType}</span>:</>
+                                        )}
                                     </p>
-                                </Card>
-                            </Link>
-                        ))}
+
+                                    {/* Sub-Filters */}
+                                    <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide">
+                                        {(activeResultType === "food" ? foodCategories : categories).map((cat) => (
+                                            <Badge key={cat.name} variant="outline" className="cursor-pointer hover:bg-secondary px-3 py-1 font-normal">
+                                                {cat.icon} {cat.name}
+                                            </Badge>
+                                        ))}
+                                    </div>
+
+                                    {/* Results Grid */}
+                                    <div className="grid grid-cols-1 gap-3">
+                                        {(activeResultType === "food" ? filteredFood : filteredElectronics).slice(0, 3).map((item: any) => (
+                                            <Card key={item.id} className="p-3 flex gap-4 hover:bg-secondary/20 cursor-pointer border-border/50 hover:border-border/80 transition-border">
+                                                <div className="w-20 h-20 bg-white rounded-md p-2 flex-shrink-0 border border-border/10">
+                                                    <img src={item.image.src} className="w-full h-full object-contain" alt={item.name} />
+                                                </div>
+                                                <div className="flex-1 min-w-0 py-1">
+                                                    <div className="flex justify-between items-start">
+                                                        <h4 className="text-sm font-semibold truncate">{item.name}</h4>
+                                                        <span className="text-xs font-bold">₹{item.price.toLocaleString()}</span>
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{item.description || item.restaurant}</p>
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <Badge variant="secondary" className="text-[10px] h-5">{item.rating} ★</Badge>
+                                                        {item.time && <span className="text-[10px] text-muted-foreground">{item.time}</span>}
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                        ))}
+
+                                        {/* Show "More" button */}
+                                        <Button variant="ghost" className="w-full text-xs text-muted-foreground h-8 mt-2">
+                                            View {activeResultType === "food" ? filteredFood.length - 3 : filteredElectronics.length - 3} more results
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ref={resultsEndRef} />
+                        </div>
+                    )}
+                </main>
+            </div>
+
+            {/* Persistent Bottom Search Bar - ONLY Visible After Search */}
+            {hasSearched && (
+                <div className="fixed bottom-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-md pb-6 pt-2 md:pl-72 border-t border-border/40">
+                    <div className="max-w-3xl mx-auto px-4 w-full">
+                        <div className="relative group">
+                            <div className="relative flex flex-col w-full bg-secondary/40 backdrop-blur-xl border border-primary/10 rounded-3xl shadow-sm transition-all duration-300 hover:border-primary/20 hover:bg-secondary/60 focus-within:ring-1 focus-within:ring-primary/20">
+                                <Input
+                                    className="w-full bg-transparent border-none shadow-none px-4 py-3 text-sm focus-visible:ring-0 placeholder:text-muted-foreground/50 min-h-[48px]"
+                                    placeholder="Ask follow-up..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                />
+
+                                <div className="flex justify-between items-center px-2 pb-2">
+                                    <div className="flex items-center gap-1">
+                                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground/70 hover:text-foreground hover:bg-background/50">
+                                            <Plus size={16} />
+                                        </Button>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Button
+                                            size="icon"
+                                            className={`h-7 w-7 rounded-full transition-all duration-300 ${searchQuery ? "bg-primary text-primary-foreground scale-100" : "bg-transparent text-muted-foreground/30 scale-90"}`}
+                                            disabled={!searchQuery}
+                                            onClick={handleSearch}
+                                        >
+                                            <ArrowUp size={16} />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                {/* Quick Links */}
-                <div className="mt-8 flex flex-wrap gap-3 justify-center">
-                    <Link href="/history">
-                        <Card variant="flat" className="px-4 py-2 cursor-pointer hover:bg-secondary transition-colors">
-                            <span className="text-sm font-medium">📋 Booking History</span>
-                        </Card>
-                    </Link>
-                </div>
-            </main>
+            )}
         </div>
     );
-};
-
-export default Index;
+}
