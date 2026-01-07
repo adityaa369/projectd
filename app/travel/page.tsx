@@ -1,7 +1,6 @@
 "use client";
 
-import { ArrowLeft, MapPin, Navigation, Calendar, Users } from "lucide-react";
-import Link from "next/link";
+import { MapPin, Navigation, Calendar, Users, Star } from "lucide-react";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MapBox from "@/components/MapBox";
 import busImg from "@/assets/bus.png";
+import Image from "next/image";
 
 const travelOptions = [
     {
@@ -81,7 +81,6 @@ const travelOptions = [
         platform: "KSRTC",
         image: busImg,
     },
-    // Added options to match length if needed or just keep original
 ];
 
 const Travel = () => {
@@ -95,174 +94,156 @@ const Travel = () => {
 
     return (
         <div className="min-h-screen bg-background pb-32">
-            {/* Header */}
-            <header className="flex items-center justify-between px-5 py-4">
-                <Link href="/" className="w-10 h-10 rounded-full flex items-center justify-center text-foreground hover:bg-secondary transition-colors">
-                    <ArrowLeft size={22} />
-                </Link>
-                <h1 className="text-xl font-bold text-foreground">Bus Travel</h1>
-                <div className="w-10" />
-            </header>
+            <div className="px-5 py-6 max-w-5xl mx-auto w-full">
+                <h1 className="text-2xl font-bold mb-6 tracking-tight">Bus Travel</h1>
 
-            {/* Main Content */}
-            <main className="px-5">
-                {/* Map */}
-                <Card variant="default" className="h-48 mb-6 overflow-hidden animate-fade-in">
+                {/* Map Section */}
+                <div className="rounded-2xl overflow-hidden border border-border/60 mb-6 h-48 md:h-64 shadow-sm">
                     <MapBox pickup={fromCoords} destination={toCoords} />
-                </Card>
+                </div>
 
                 {/* Search Form */}
-                <Card variant="default" className="p-4 mb-4 animate-fade-in">
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
-                                <Navigation size={18} className="text-success" />
+                <Card className="p-4 mb-8 bg-card border-border/60 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="relative">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Navigation size={14} className="text-primary" />
                             </div>
                             <Input
-                                variant="pill"
-                                inputSize="default"
                                 placeholder="From city"
                                 value={from}
                                 onChange={(e) => setFrom(e.target.value)}
-                                className="flex-1"
+                                className="pl-12 h-12 bg-background"
                             />
                         </div>
-
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center">
-                                <MapPin size={18} className="text-destructive" />
+                        <div className="relative">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <MapPin size={14} className="text-primary" />
                             </div>
                             <Input
-                                variant="pill"
-                                inputSize="default"
                                 placeholder="To city"
                                 value={to}
                                 onChange={(e) => setTo(e.target.value)}
-                                className="flex-1"
+                                className="pl-12 h-12 bg-background"
                             />
                         </div>
-
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                                <Calendar size={18} className="text-primary" />
+                        <div className="relative">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                <Calendar size={14} className="text-primary" />
                             </div>
                             <Input
                                 type="date"
-                                variant="pill"
-                                inputSize="default"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="flex-1"
+                                className="pl-12 h-12 bg-background"
                             />
                         </div>
                     </div>
                 </Card>
 
-                {/* Best Value Card */}
-                <Card variant="elevated" className="p-4 mb-6 animate-fade-in">
-                    <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="bestValue">BEST VALUE</Badge>
-                        <span className="text-muted-foreground text-sm">AI Recommended</span>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="w-20 h-16 bg-secondary/30 rounded-xl overflow-hidden">
-                            <img src={selectedTravel.image.src} alt={selectedTravel.name} className="w-full h-full object-contain p-1" />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-foreground">{selectedTravel.name}</h3>
-                            <p className="text-sm text-muted-foreground">{selectedTravel.type}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="text-sm text-foreground">{selectedTravel.departure}</span>
-                                <span className="text-muted-foreground">→</span>
-                                <span className="text-sm text-foreground">{selectedTravel.arrival}</span>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-2xl font-bold text-foreground">₹{selectedTravel.price}</p>
-                            <p className="text-sm text-muted-foreground line-through">₹{selectedTravel.oldPrice}</p>
-                        </div>
-                    </div>
-                </Card>
-
-                {/* AI Insights */}
-                <Card variant="default" className="p-4 mb-6 animate-fade-in">
-                    <p className="text-xs font-semibold text-muted-foreground tracking-wide mb-3">AI INSIGHTS</p>
-                    <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                            <span className="text-success">✓</span>
-                            <p className="text-sm text-muted-foreground">Best price-to-comfort ratio among all options</p>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <span className="text-success">✓</span>
-                            <p className="text-sm text-muted-foreground">High rating (4.5★) with good reviews</p>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <span className="text-primary">💳</span>
-                            <p className="text-sm text-muted-foreground">Pay with Paytm for extra ₹50 cashback</p>
-                        </div>
-                    </div>
-                </Card>
-
-                {/* All Bus Options */}
-                <h2 className="text-xl font-bold text-foreground mb-4">Compare Buses</h2>
-
-                <div className="space-y-3 mb-6">
-                    {travelOptions.map((travel) => (
-                        <Card
-                            key={travel.id}
-                            variant="default"
-                            className={`p-4 cursor-pointer transition-all animate-fade-in ${selectedTravel.id === travel.id ? "ring-2 ring-primary" : ""
-                                }`}
-                            onClick={() => setSelectedTravel(travel)}
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-12 bg-secondary/30 rounded-lg overflow-hidden">
+                <div className="flex flex-col md:flex-row gap-6">
+                    {/* Left Column: List */}
+                    <div className="flex-1 space-y-4">
+                        <h2 className="text-lg font-semibold px-1">Available Buses</h2>
+                        {travelOptions.map((travel) => (
+                            <div
+                                key={travel.id}
+                                onClick={() => setSelectedTravel(travel)}
+                                className={`group p-4 rounded-xl border cursor-pointer transition-all duration-200 flex flex-col sm:flex-row gap-4 ${selectedTravel.id === travel.id
+                                        ? "bg-secondary border-primary/30 shadow-md ring-1 ring-primary/20"
+                                        : "bg-card border-border/40 hover:bg-secondary/50 hover:border-border/80"
+                                    }`}
+                            >
+                                <div className="w-full sm:w-24 h-24 bg-white rounded-lg p-2 flex items-center justify-center border border-border/10">
                                     <img src={travel.image.src} alt={travel.name} className="w-full h-full object-contain" />
                                 </div>
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="font-semibold text-foreground">{travel.name}</h3>
-                                        <span className="text-xs px-2 py-0.5 bg-secondary rounded-full text-muted-foreground">{travel.type}</span>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="font-bold text-foreground truncate">{travel.name}</h3>
+                                            <p className="text-xs text-muted-foreground">{travel.type}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="block font-bold">₹{travel.price}</span>
+                                            <span className="text-xs text-muted-foreground line-through">₹{travel.oldPrice}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <span>{travel.departure}</span>
-                                        <span>→</span>
-                                        <span>{travel.arrival}</span>
-                                        <span>•</span>
-                                        <span>{travel.duration}</span>
+
+                                    <div className="flex items-center gap-3 mt-3 text-sm">
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-medium">{travel.departure}</span>
+                                            <span className="text-muted-foreground text-xs">→</span>
+                                            <span className="font-medium">{travel.arrival}</span>
+                                        </div>
+                                        <span className="text-xs text-muted-foreground">• {travel.duration}</span>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <Users size={12} className="text-muted-foreground" />
-                                        <span className="text-xs text-muted-foreground">{travel.seats} seats left</span>
-                                        <span className="text-xs text-muted-foreground">• {travel.platform}</span>
+
+                                    <div className="flex items-center justify-between mt-3">
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant="outline" className="bg-background font-normal text-xs gap-1">
+                                                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" /> {travel.rating}
+                                            </Badge>
+                                            <span className="text-xs text-muted-foreground">{travel.seats} seats left</span>
+                                        </div>
+                                        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{travel.platform}</span>
                                     </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-lg font-bold text-foreground">₹{travel.price}</p>
-                                    <p className="text-xs text-muted-foreground line-through">₹{travel.oldPrice}</p>
                                 </div>
                             </div>
-                        </Card>
-                    ))}
-                </div>
-            </main>
+                        ))}
+                    </div>
 
-            {/* Footer Booking Bar */}
-            <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 shadow-elevated">
-                <div className="flex items-center justify-between mb-3">
-                    <div>
-                        <p className="text-sm text-muted-foreground">{selectedTravel.name} • {selectedTravel.type}</p>
-                        <p className="text-2xl font-bold text-foreground">₹{selectedTravel.price}</p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-sm text-foreground">{selectedTravel.departure} → {selectedTravel.arrival}</p>
-                        <p className="text-xs text-muted-foreground">{selectedTravel.seats} seats available</p>
+                    {/* Right Column: Selected Details & AI Insights (Sticky on Desktop) */}
+                    <div className="md:w-80 space-y-4">
+                        <div className="sticky top-6 space-y-4">
+                            {/* AI Insights */}
+                            <Card className="p-5 border-border/60 shadow-sm bg-gradient-to-br from-card to-secondary/5">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="text-lg">✨</span>
+                                    <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">AI Insights</span>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex gap-3">
+                                        <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                                        <p className="text-sm text-muted-foreground leading-snug">Best price-to-comfort ratio available right now.</p>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                                        <p className="text-sm text-muted-foreground leading-snug">Rated 4.0+ by over 500 travelers.</p>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                                        <p className="text-sm text-muted-foreground leading-snug">Use <strong>PAYTM50</strong> for ₹50 cashback.</p>
+                                    </div>
+                                </div>
+                            </Card>
+
+                            {/* Booking Action */}
+                            <Card className="p-5 bg-card border-border/60 shadow-md">
+                                <div className="mb-4">
+                                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Selected</p>
+                                    <h3 className="font-bold text-lg mt-1">{selectedTravel.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{selectedTravel.departure} - {selectedTravel.arrival}</p>
+                                </div>
+                                <div className="flex items-end justify-between mb-6">
+                                    <div>
+                                        <span className="text-3xl font-bold">₹{selectedTravel.price}</span>
+                                    </div>
+                                </div>
+                                <Button className="w-full h-12 text-sm font-bold uppercase tracking-wider">
+                                    Book on {selectedTravel.platform}
+                                </Button>
+                            </Card>
+                        </div>
                     </div>
                 </div>
-                <Button variant="checkout" size="xl" className="w-full">
-                    BOOK ON {selectedTravel.platform.toUpperCase()}
-                </Button>
+
+                {/* Mobile Floating Action (Visible only on small screens) */}
+                <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t border-border/40 p-4 pb-6 z-20">
+                    <Button className="w-full h-12 text-sm font-bold uppercase tracking-wider">
+                        Book for ₹{selectedTravel.price}
+                    </Button>
+                </div>
             </div>
         </div>
     );

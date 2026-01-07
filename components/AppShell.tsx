@@ -13,7 +13,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex min-h-screen w-full bg-background relative">
             {/* Desktop Sidebar */}
             <div className="hidden md:block w-64 flex-shrink-0">
-                <Sidebar className="w-64 fixed h-full" />
+                <Sidebar className="w-64 fixed top-0 left-0 h-full z-50 border-r bg-background" />
             </div>
 
             {/* Mobile Sidebar (Sheet) */}

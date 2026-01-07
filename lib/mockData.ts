@@ -2,6 +2,8 @@
 import laptopImg from "@/assets/laptop.png";
 import burgerImg from "@/assets/burger.png";
 import pizzaImg from "@/assets/pizza.png";
+import busImg from "@/assets/bus.png";
+import taxiImg from "@/assets/taxi.png";
 
 // Placeholder images needs to be handled if assets aren't importable in non-component files in some setups, 
 // but in Next.js this usually works if they are just objects. 
@@ -245,5 +247,122 @@ export const allFoodItems = [
         restaurant: "Haldirams",
         review: "Sweet, Soft",
         image: burgerImg,
+    },
+];
+
+export const allTravel = [
+    {
+        id: 1,
+        name: "VRL Travels",
+        type: "AC Sleeper",
+        price: 899,
+        oldPrice: 1199,
+        departure: "9:00 PM",
+        arrival: "6:00 AM",
+        duration: "9h",
+        rating: 4.5,
+        seats: 23,
+        platform: "RedBus",
+        image: busImg,
+    },
+    {
+        id: 2,
+        name: "SRS Travels",
+        type: "AC Seater",
+        price: 699,
+        oldPrice: 899,
+        departure: "10:30 PM",
+        arrival: "7:30 AM",
+        duration: "9h",
+        rating: 4.2,
+        seats: 15,
+        platform: "MakeMyTrip",
+        image: busImg,
+    },
+    {
+        id: 3,
+        name: "KSRTC Airavat",
+        type: "AC Sleeper",
+        price: 799,
+        oldPrice: 999,
+        departure: "9:30 PM",
+        arrival: "6:30 AM",
+        duration: "9h",
+        rating: 4.4,
+        seats: 18,
+        platform: "KSRTC",
+        image: busImg,
+    },
+];
+
+export const allRides = [
+    {
+        id: 1,
+        name: "Uber Cab",
+        type: "Economy",
+        category: "Cab",
+        price: 209,
+        time: "4 min away",
+        eta: "25 min",
+        platform: "Uber",
+        image: taxiImg,
+    },
+    {
+        id: 2,
+        name: "Ola Auto",
+        type: "Auto",
+        category: "Auto",
+        price: 82,
+        time: "5 min away",
+        eta: "27 min",
+        platform: "Ola",
+        image: taxiImg,
+    },
+    {
+        id: 3,
+        name: "Uber Bike",
+        type: "Bike",
+        category: "Bike",
+        price: 45,
+        time: "2 min away",
+        eta: "20 min",
+        platform: "Uber",
+        image: taxiImg,
+    },
+];
+
+export const allHotels = [
+    {
+        id: 1,
+        name: "Grand Sheraton",
+        type: "Luxury",
+        rating: 4.8,
+        price: 8499,
+        oldPrice: 12000,
+        location: "Whitefield, Bangalore",
+        amenities: "Pool, Spa, WiFi",
+        image: busImg, // Using placeholder for now
+    },
+    {
+        id: 2,
+        name: "Lemon Tree Premier",
+        type: "Business",
+        rating: 4.3,
+        price: 4299,
+        oldPrice: 5500,
+        location: "Indiranagar, Bangalore",
+        amenities: "Gym, Breakfast",
+        image: busImg, // Using placeholder for now
+    },
+    {
+        id: 3,
+        name: "Ibis City Centre",
+        type: "Budget",
+        rating: 4.1,
+        price: 2899,
+        oldPrice: 3500,
+        location: "MG Road, Bangalore",
+        amenities: "WiFi, Bar",
+        image: busImg, // Using placeholder for now
     },
 ];
