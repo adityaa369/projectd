@@ -60,10 +60,22 @@ const FoodSearchContent = () => {
                 </div>
 
                 {/* Items List */}
-                <div className="flex flex-col gap-6 items-center">
-                    {filteredItems.map((item) => (
-                        <RichResultCard key={item.id} item={item} type="food" />
-                    ))}
+                <div className="flex flex-col gap-8">
+                    {/* Featured First Item */}
+                    {filteredItems.length > 0 && (
+                        <div className="w-full flex justify-center">
+                            <RichResultCard item={filteredItems[0]} type="food" layoutMode="list" />
+                        </div>
+                    )}
+
+                    {/* Grid for Remaining Items */}
+                    {filteredItems.length > 1 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                            {filteredItems.slice(1).map((item) => (
+                                <RichResultCard key={item.id} item={item} type="food" layoutMode="grid" />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {filteredItems.length === 0 && (

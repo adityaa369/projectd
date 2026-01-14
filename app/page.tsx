@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState, useRef, Suspense } from "react";
-import { ArrowUp, Plus, Globe, Image as ImageIcon, MapPin, Paperclip, Sparkles, User } from "lucide-react";
+import { ArrowUp, Plus, Globe, Car, MapPin, Paperclip, Sparkles, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { allElectronics, allFoodItems } from "@/lib/mockData";
@@ -105,13 +105,13 @@ function HomeContent() {
                     {messages.length === 0 && (
                         <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] animate-fade-in px-4">
                             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
-                                <img src="/logo.png" alt="Depenk Logo" className="w-full h-full object-cover" />
+                                <img src="/logo.png" alt="Deepenk Logo" className="w-full h-full object-cover" />
                             </div>
                             <h1 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight text-center">What do you want to choose today?</h1>
 
                             <div className="flex flex-wrap justify-center gap-4 text-xs font-medium text-muted-foreground/60">
                                 <button className="flex items-center gap-2 hover:text-foreground transition-colors px-4 py-2 bg-secondary/30 rounded-full hover:bg-secondary/60">
-                                    <ImageIcon size={14} /> Create image
+                                    <Car size={14} /> Book a ride
                                 </button>
                                 <button className="flex items-center gap-2 hover:text-foreground transition-colors px-4 py-2 bg-secondary/30 rounded-full hover:bg-secondary/60">
                                     <MapPin size={14} /> Plan trip
@@ -198,7 +198,7 @@ function HomeContent() {
                         <div className="relative flex flex-col w-full bg-secondary/30 backdrop-blur-xl border border-primary/10 rounded-3xl shadow-lg transition-all duration-300 hover:bg-secondary/50 focus-within:bg-background focus-within:ring-1 focus-within:ring-primary/20 focus-within:shadow-xl">
                             <Input
                                 className="w-full bg-transparent border-none shadow-none px-5 py-4 text-base focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50 min-h-[58px]"
-                                placeholder="Message Depenk..."
+                                placeholder="Message Deepenk..."
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={handleKeyDown}
@@ -227,7 +227,7 @@ function HomeContent() {
                             </div>
                         </div>
                         <div className="text-center mt-3">
-                            <p className="text-[10px] text-muted-foreground/50 font-medium">Depenk can make mistakes. Consider checking important information.</p>
+                            <p className="text-[10px] text-muted-foreground/50 font-medium">Deepenk can make mistakes. Consider checking important information.</p>
                         </div>
                     </div>
                 </div>

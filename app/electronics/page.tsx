@@ -60,10 +60,22 @@ const ElectronicsContent = () => {
                 </div>
 
                 {/* Product List */}
-                <div className="flex flex-col gap-6 items-center">
-                    {filteredProducts.map((item) => (
-                        <RichResultCard key={item.id} item={item} type="electronics" />
-                    ))}
+                <div className="flex flex-col gap-8">
+                    {/* Featured First Item */}
+                    {filteredProducts.length > 0 && (
+                        <div className="w-full flex justify-center">
+                            <RichResultCard item={filteredProducts[0]} type="electronics" layoutMode="list" />
+                        </div>
+                    )}
+
+                    {/* Grid for Remaining Items */}
+                    {filteredProducts.length > 1 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                            {filteredProducts.slice(1).map((item) => (
+                                <RichResultCard key={item.id} item={item} type="electronics" layoutMode="grid" />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {filteredProducts.length === 0 && (

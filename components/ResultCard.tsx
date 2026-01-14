@@ -7,14 +7,16 @@ import Image from "next/image";
 interface ResultCardProps {
     item: any;
     type: "electronics" | "food" | "travel" | "ride" | "hotel";
+    layoutMode?: "list" | "grid";
 }
 
-export function RichResultCard({ item, type }: ResultCardProps) {
+export function RichResultCard({ item, type, layoutMode = "list" }: ResultCardProps) {
     const isFood = type === "food";
     const isTravel = type === "travel";
     const isRide = type === "ride";
     const isHotel = type === "hotel";
     const isElectronics = type === "electronics";
+    const isGrid = layoutMode === "grid";
 
     const getBadgeLabel = () => {
         if (isFood) return "Best Value";
@@ -33,10 +35,10 @@ export function RichResultCard({ item, type }: ResultCardProps) {
     };
 
     return (
-        <Card className="w-full max-w-4xl overflow-hidden border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow duration-300">
-            <div className="flex flex-col md:flex-row">
+        <Card className={`w-full overflow-hidden border-border/60 bg-card shadow-sm hover:shadow-md transition-shadow duration-300 ${isGrid ? "h-full flex flex-col" : "max-w-6xl"}`}>
+            <div className={`flex flex-col ${!isGrid ? "md:flex-row" : ""}`}>
                 {/* Left Section: Product/Food Image & Basic Info */}
-                <div className="md:w-5/12 p-6 flex flex-col relative border-b md:border-b-0 md:border-r border-border/40">
+                <div className={`${!isGrid ? "md:w-5/12 border-b md:border-b-0 md:border-r" : "w-full border-b"} p-6 flex flex-col relative border-border/40`}>
                     <div className="absolute top-4 left-4 z-10">
                         <Badge className="bg-green-500 hover:bg-green-600 text-white border-none px-3 py-1 text-xs uppercase font-bold tracking-wider">
                             {getBadgeLabel()}
@@ -68,7 +70,7 @@ export function RichResultCard({ item, type }: ResultCardProps) {
                 </div>
 
                 {/* Right Section: AI Insights */}
-                <div className="md:w-7/12 p-6 bg-secondary/5 space-y-6">
+                <div className={`${!isGrid ? "md:w-7/12" : "w-full"} p-6 bg-secondary/5 space-y-6 flex-1`}>
                     <div className="flex items-center gap-2">
                         <Zap className="w-4 h-4 text-primary fill-primary" />
                         <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">AI Insights</span>
@@ -77,36 +79,37 @@ export function RichResultCard({ item, type }: ResultCardProps) {
                     {isFood && (
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <h4 className="text-sm font-semibold">AI Review Summary</h4>
-                                <p className="text-sm text-muted-foreground leading-relaxed">
-                                    Taste, Hygiene. Great taste and quick delivery. Consistent quality reported by 95% of users.
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">AI Review Summary</h4>
+                                <p className="text-sm text-foreground font-medium leading-relaxed">
+                                    Taste, Hygiene: Great taste and quick delivery.
                                 </p>
                             </div>
                             <div className="space-y-2">
-                                <h4 className="text-sm font-semibold">Bundle Suggestion</h4>
-                                <p className="text-sm text-muted-foreground">Add Coke + Fries for ₹80 extra, save ₹40.</p>
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Bundle Suggestion</h4>
+                                <p className="text-sm text-foreground">Add Coke + Fries for ₹80 extra, save ₹40.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Payment Suggestion</h4>
+                                <p className="text-sm text-foreground">Pay via Paytm UPI → Extra 20% cashback.</p>
                             </div>
                         </div>
                     )}
 
                     {isElectronics && (
                         <div className="space-y-6">
-                            <div className="space-y-3">
-                                <h4 className="text-sm font-semibold">Price Comparison</h4>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between items-center pb-2 border-b border-border/40">
-                                        <span className="text-muted-foreground">Amazon</span>
-                                        <span className="font-medium">₹{(item.price * 1.05).toLocaleString()}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center pb-2 border-b border-border/40">
-                                        <span className="text-green-600 font-bold">Flipkart</span>
-                                        <span className="text-green-600 font-bold">₹{item.price.toLocaleString()}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground">Croma</span>
-                                        <span className="font-medium">₹{(item.price * 1.08).toLocaleString()}</span>
-                                    </div>
-                                </div>
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">AI Review Summary</h4>
+                                <p className="text-sm text-foreground font-medium leading-relaxed">
+                                    Performance, Camera: Excellent daylight photography and smooth performance.
+                                </p>
+                            </div>
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Bundle Suggestion</h4>
+                                <p className="text-sm text-foreground">Add Screen Guard + Case for ₹999, save ₹500.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Payment Suggestion</h4>
+                                <p className="text-sm text-foreground">10% off with HDFC Credit Card (Max ₹2,000).</p>
                             </div>
                         </div>
                     )}

@@ -87,7 +87,7 @@ export function Sidebar({ className, isOpen, setIsOpen }: SidebarProps) {
                             <img src="/logo.png" alt="Depenk Logo" className="w-full h-full object-cover" />
                         </div>
                         <h2 className="text-lg font-semibold tracking-tight">
-                            Depenk
+                            Deepenk
                         </h2>
                     </div>
                     <div className="space-y-1 mt-6">

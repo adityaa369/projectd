@@ -6,7 +6,7 @@ import AppShell from "@/components/AppShell";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "Depenk",
+    title: "Deepenk",
     description: "Find best deals on food, hotels & travel",
 };
 
